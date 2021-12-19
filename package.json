@@ -9,8 +9,10 @@
 		"pub": "pnpm package && cd package && pnpm publish"
 	},
 	"devDependencies": {
-		"@sveltejs/adapter-auto": "next",
+		"@sveltejs/adapter-static": "^1.0.0-next.22",
 		"@sveltejs/kit": "next",
+		"@types/prismjs": "^1.16.6",
+		"prismjs": "^1.25.0",
 		"svelte": "^3.44.3",
 		"svelte-preprocess": "^4.10.1",
 		"svelte2tsx": "^0.4.12",

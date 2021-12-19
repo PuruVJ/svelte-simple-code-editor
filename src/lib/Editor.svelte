@@ -23,11 +23,12 @@
 <script lang="ts">
 	import { createEventDispatcher, onMount } from 'svelte';
 
-	export let highlight: (value: string) => string;
-	export let value: string;
+	export let highlight: (value: string) => string = () => '';
+	export let value: string = '';
 	export let insertSpaces: boolean = true;
 	export let tabSize = 2;
 	export let ignoreTabKey = false;
+	export let preClass: string = '';
 
 	let input: HTMLTextAreaElement;
 
@@ -375,7 +376,7 @@
 		{...$$restProps}
 	/>
 
-	<pre aria-hidden="true" class="editor">
+	<pre aria-hidden="true" class="editor {preClass}">
     {@html highlighted}
     <br />
   </pre>
@@ -440,24 +441,5 @@
 
 		border: 0;
 		box-sizing: inherit;
-
-		background: none;
-
-		display: inherit;
-
-		font-family: inherit;
-		font-size: inherit;
-		font-style: inherit;
-		font-variant-ligatures: inherit;
-		font-weight: inherit;
-		letter-spacing: inherit;
-		line-height: inherit;
-		tab-size: inherit;
-		text-indent: inherit;
-		text-rendering: inherit;
-		text-transform: inherit;
-		white-space: pre-wrap;
-		word-break: keep-all;
-		overflow-wrap: break-word;
 	}
 </style>

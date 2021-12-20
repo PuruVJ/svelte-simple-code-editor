@@ -23,23 +23,105 @@
 <script lang="ts">
 	import { createEventDispatcher, onMount } from 'svelte';
 
+	/**
+	 * Code to be shown.
+	 *
+	 * Note: This value is changed from inside of this component. By default, you won't be able to detect changes.
+	 * But if you use it as `bind:value`, all changeswill flow back to the component where yur using `SimpleCodeEditor`.
+	 *
+	 * @default ''
+	 *
+	 * @example
+	 * ```svelte
+	 * <SimpleCodeEditor value="var num = 10;" />
+	 *
+	 * <!-- Update local variable `value` as user types into the editor -->
+	 * <SimpleCodeEditor bind:value={value} />
+	 * ```
+	 */
+	export let value: string;
+
+	/**
+	 * Highlight function. takes a string and returns a string(the highlighted code).
+	 *
+	 * @default () => ''
+	 *
+	 * @example
+	 * ```svelte
+	 * <SimpleCodeEditor highlight={(code) => Prism.highlight(code, Prism.languages.javascript, 'javascript').value} />
+	 * ```
+	 */
 	export let highlight: (value: string) => string = () => '';
-	export let value: string = '';
+
+	/**
+	 * Insert spaces instead of tabs.
+	 *
+	 * @default true
+	 *
+	 * @example
+	 * ```svelte
+	 * <SimpleCodeEditor insertSpaces={false} />
+	 * ```
+	 */
 	export let insertSpaces: boolean = true;
+
+	/**
+	 * Tab size. When you hit Tab key, how much indentation should be added.
+	 *
+	 * @default 2
+	 *
+	 * @example
+	 * ```svelte
+	 * <SimpleCodeEditor tabSize={4} />
+	 * ```
+	 */
 	export let tabSize = 2;
+
+	/**
+	 * When you hit tab, should it add indentation or focus out of the editor
+	 *
+	 * @default false
+	 *
+	 * @example
+	 * ```svelte
+	 * <SimpleCodeEditor ignoreTabKey={true} />
+	 * ```
+	 */
 	export let ignoreTabKey = false;
+
+	/**
+	 * Class to apply to pre tag used internally. This is necessary when using custom themes with PrismJS and you have to give your `<pre>` tag a class like `language-`.
+	 *
+	 * @default ''
+	 *
+	 * @example
+	 * ```svelte
+	 * <SimpleCodeEditor preClass="language-javascript" />
+	 * ```
+	 */
 	export let preClass: string = '';
 
-	let input: HTMLTextAreaElement;
+	/**
+	 * Attributes to pass to the internal `<textarea>` tag.
+	 *
+	 * @default {}
+	 *
+	 * @example
+	 * ```svelte
+	 * <SimpleCodeEditor textAreaProps={{ spellcheck: false }} />
+	 * ```
+	 */
+	export let textAreaProps: Omit<
+		svelte.JSX.HTMLAttributes<HTMLTextAreaElement>,
+		keyof svelte.JSX.DOMAttributes<HTMLTextAreaElement>
+	> = {};
 
+	let textarea: HTMLTextAreaElement;
 	let capture = true;
-
 	let history: History = {
 		stack: [],
 		offset: -1,
 	};
-
-	$: highlighted = highlight(value);
 
 	const dispatch = createEventDispatcher<{ 'value-change': string; keydown: KeyboardEvent }>();
 
@@ -49,7 +131,7 @@
 
 	function recordCurrentState() {
 		// Save current state of the input
-		const { value, selectionStart, selectionEnd } = input;
+		const { value, selectionStart, selectionEnd } = textarea;
 
 		recordChange({ value, selectionStart, selectionEnd });
 	}
@@ -108,11 +190,11 @@
 		// Save last selection state
 		const last = history.stack[history.offset];
 
-		if (last && input) {
+		if (last && textarea) {
 			history.stack[history.offset] = {
 				...last,
-				selectionStart: input.selectionStart,
-				selectionEnd: input.selectionEnd,
+				selectionStart: textarea.selectionStart,
+				selectionEnd: textarea.selectionEnd,
 			};
 		}
 
@@ -148,9 +230,14 @@
 	}
 
 	function updateInput(record: Rec) {
-		input.value = record.value;
-		input.selectionStart = record.selectionStart;
-		input.selectionEnd = record.selectionEnd;
+		//  Update the value variable
+		value = record.value;
+
+		// Now updatethe actual input
+		// TODO Figure out why this works
+		textarea.value = record.value;
+		textarea.selectionStart = record.selectionStart;
+		textarea.selectionEnd = record.selectionEnd;
 
 		dispatch('value-change', record.value);
 	}
@@ -265,6 +352,8 @@
 				const matches = line.match(/^\s+/);
 
 				if (matches?.[0]) {
+					e.preventDefault();
+
 					// Preserve indentation on inserting a new line
 					const indent = '\n' + matches[0];
 					const updatedSelection = selectionStart + indent.length;
@@ -363,7 +452,7 @@
  -->
 <div>
 	<textarea
-		bind:this={input}
+		bind:this={textarea}
 		bind:value
 		on:keydown={handleKeyDown}
 		on:change={handleChange}
@@ -373,11 +462,11 @@
 		spellCheck={false}
 		data-gramm={false}
 		class="editor"
-		{...$$restProps}
+		{...textAreaProps}
 	/>
 
 	<pre aria-hidden="true" class="editor {preClass}">
-    {@html highlighted}
+    {@html highlight(value)}
     <br />
   </pre>
 </div>

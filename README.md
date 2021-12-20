@@ -1,38 +1,59 @@
-# create-svelte
+# svelte-simple-code-editor
 
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/master/packages/create-svelte);
+Simple no-frills code editor with syntax highlighting.
 
-## Creating a project
+> This is the Svelte port of the amazing [react-simple-code-editor](https://github.com/satya164/react-simple-code-editor) by [@satya164](https://github.com/satya164).
 
-If you're seeing this, you've probably already done this step. Congrats!
+## Features
 
-```bash
-# create a new project in the current directory
-npm init svelte@next
+- 🤏 Small - Less than 3KB min+gzip.
+- 🐇 Simple - Quite simple to use, and effectively zero config required!
+- 🧙 Elegant - Use a Svelte component rather than setting things up in `onMount` hook.
+- 📤 Highly customizable - Offers tons of options that you can modify to get different behaviors.
+- 💻 SSR friendly - Works seamlessly in Sveltekit and other Server Side Rendering environments!
 
-# create a new project in my-app
-npm init svelte@next my-app
+## Installing
+
+```sh
+# pnpm
+pnpm add svelte-simple-code-editor
+
+# npm
+npm install svelte-simple-code-editor
+
+# yarn
+yarn add svelte-simple-code-editor
 ```
 
-> Note: the `@next` is temporary
+## Usage
 
-## Developing
+```svelte
+<script>
+	import { SimpleCodeEditor } from 'svelte-simple-code-editor';
+</script>
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
-
-```bash
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
+<SimpleCodeEditor value="let x = 1;\n console.log(x);" />
 ```
 
-## Building
+## Props
 
-Before creating a production version of your app, install an [adapter](https://kit.svelte.dev/docs#adapters) for your target environment. Then:
+There's tons of options available for this package. All of them are already documented within the code itself, so you'll never have to leave the code editor.
 
-```bash
-npm run build
+### value
+
+Code to be shown.
+
+Note: This value is changed from inside of this component. By default, you won't be able to detect changes.
+
+But if you use it as `bind:value`, all changeswill flow back to the component where yur using `SimpleCodeEditor`.
+
+**Default:** `""`
+
+**Example:**
+
+```svelte
+<SimpleCodeEditor value="var num = 10;" />
+
+<!-- Update local variable `value` as user types into the editor -->
+<SimpleCodeEditor bind:value={value} />
 ```
-
-> You can preview the built app with `npm run preview`, regardless of whether you installed an adapter. This should _not_ be used to serve your app in production.

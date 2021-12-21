@@ -1,7 +1,7 @@
 {
 	"name": "svelte-simple-code-editor",
 	"description": "A simple code editor in Svelte",
-	"version": "0.0.1",
+	"version": "0.0.2",
 	"author": "Puru Vijay",
 	"license": "MIT",
 	"bugs": {

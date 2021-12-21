@@ -13,6 +13,15 @@
 	const HISTORY_LIMIT = 100;
 	const HISTORY_TIME_GAP = 3000;
 
+	const PAIRS = {
+		'(': ['(', ')'],
+		'[': ['[', ']'],
+		'{': ['{', '}'],
+		'"': ['"', '"'],
+		"'": ["'", "'"],
+		'`': ['`', '`'],
+	};
+
 	const browser = typeof window !== 'undefined';
 	const isWindows = browser && /Win/i.test(navigator.platform);
 	const isMacLike = browser && /(Mac|iPhone|iPod|iPad)/i.test(navigator.platform);
@@ -253,6 +262,7 @@
 
 		if (e.key === 'Escape') {
 			(e.target as HTMLTextAreaElement).blur();
+			return;
 		}
 
 		const { value, selectionStart, selectionEnd } = e.target as HTMLTextAreaElement;
@@ -374,14 +384,7 @@
 				}
 			}
 		} else if (['(', '[', '{', `"`, `'`, '`'].includes(e.key)) {
-			let chars = {
-				'(': ['(', ')'],
-				'[': ['[', ']'],
-				'{': ['{', '}'],
-				'"': ['"', '"'],
-				"'": ["'", "'"],
-				'`': ['`', '`'],
-			}[e.key];
+			let chars = PAIRS[e.key];
 
 			// If text is selected, wrap them in the characters
 			if (selectionStart !== selectionEnd && chars) {
@@ -397,6 +400,20 @@
 					// Update caret position
 					selectionStart,
 					selectionEnd: selectionEnd + 2,
+				});
+			} else if (selectionStart === selectionEnd && chars) {
+				// If no text is selected, insert the characters
+				e.preventDefault();
+
+				applyEdits({
+					value:
+						value.substring(0, selectionStart) +
+						chars[0] +
+						chars[1] +
+						value.substring(selectionEnd),
+					// Update caret position
+					selectionStart: selectionStart + 1,
+					selectionEnd: selectionStart + 1,
 				});
 			}
 		} else if (

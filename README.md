@@ -47,6 +47,8 @@ Note: This value is changed from inside of this component. By default, you won't
 
 But if you use it as `bind:value`, all changeswill flow back to the component where yur using `SimpleCodeEditor`.
 
+**Type:** `string`
+
 **Default:** `""`
 
 **Example:**
@@ -57,3 +59,103 @@ But if you use it as `bind:value`, all changeswill flow back to the component wh
 <!-- Update local variable `value` as user types into the editor -->
 <SimpleCodeEditor bind:value={value} />
 ```
+
+### highlight
+
+Highlight function. takes a string and returns a string(the highlighted code).
+
+**Type:** `(value: string) => string`
+
+**Default:** `() => ''`
+
+**Example:**
+
+```svelte
+<script>
+	import Prism from 'prismjs';
+</script>
+
+<SimpleCodeEditor highlight={(code) => Prism.highlight(code, Prism.languages.javascript, 'javascript').value} />
+```
+
+### insertSpaces
+
+Insert spaces instead of tabs.
+
+**Type:** `boolean`
+
+**Default:** `true`
+
+**Example:**
+
+```svelte
+<SimpleCodeEditor insertSpaces={false} />
+```
+
+### tabSize
+
+Tab size. When you hit Tab key, how much indentation should be added.
+
+**Type:** `number`
+
+**Default:** `2`
+
+**Example:**
+
+```svelte
+<SimpleCodeEditor tabSize={4} />
+```
+
+### ignoreTabKey
+
+When you hit tab, should it add indentation or focus out of the editor
+
+**Type:** `boolean`
+
+**Default:** `false`
+
+**Example:**
+
+```svelte
+<SimpleCodeEditor ignoreTabKey={true} />
+```
+
+### preClass
+
+Class to apply to pre tag used internally. This is necessary when using custom themes with PrismJS and you have to give your `<pre>` tag a class like `language-`.
+
+**Type:** `string`
+
+**Default:** `""`
+
+**Example:**
+
+```svelte
+<SimpleCodeEditor preClass="language-javascript" />
+```
+
+### textAreaProps
+
+Attributes to pass to the internal `<textarea>` tag.
+
+**Type:** `object`
+
+**Default:** `{}`
+
+**Example:**
+
+```svelte
+<SimpleCodeEditor textAreaProps={{ 'aria-label': 'svelte-simple-code-editor-textarea' }} />
+```
+
+## Custom style props
+
+You can specify the following style props:
+
+- `--padding`: Padding of the editor. **Default**: `4px`
+
+This is it for now. You can recommend more props to be added in the future here: [Custom style props to be allowed](https://github.com/PuruVJ/svelte-simple-code-editor/issues/1)
+
+## License
+
+MIT License © Puru Vijay

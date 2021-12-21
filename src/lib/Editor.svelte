@@ -113,7 +113,13 @@
 	 */
 	export let textAreaProps: Omit<
 		svelte.JSX.HTMLAttributes<HTMLTextAreaElement>,
-		keyof svelte.JSX.DOMAttributes<HTMLTextAreaElement>
+		| keyof svelte.JSX.DOMAttributes<HTMLTextAreaElement>
+		| 'value'
+		| 'class'
+		| 'autocapitalize'
+		| 'autocomplete'
+		| 'autocorrect'
+		| 'autofocus'
 	> = {};
 
 	let textarea: HTMLTextAreaElement;
@@ -452,6 +458,7 @@
  -->
 <div>
 	<textarea
+		{...textAreaProps}
 		bind:this={textarea}
 		bind:value
 		on:keydown={handleKeyDown}
@@ -462,7 +469,6 @@
 		spellCheck={false}
 		data-gramm={false}
 		class="editor"
-		{...textAreaProps}
 	/>
 
 	<pre aria-hidden="true" class="editor {preClass}">
